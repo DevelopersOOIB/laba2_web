@@ -1,0 +1,44 @@
+version: '3'
+
+services:
+  web:
+    build:
+      context: ./laba2_web
+      dockerfile: Dockerfile
+    ports:
+      - "8080:80"
+    environment:
+      - DATABASE_HOST=db
+      - DATABASE_PORT=3306
+      - DATABASE_NAME=first
+      - DATABASE_USER=kali
+      - DATABASE_PASSWORD=kali
+    volumes:
+      - ./laba2_web:/var/www/html
+    depends_on:
+      - db
+    networks:
+      custom_network:
+        ipv4_address: 172.20.0.20
+  db:
+    image: mariadb
+    environment:
+      - MYSQL_DATABASE=first
+      - MSQL_USER=kali
+      - MYSQL_PASSWORD=kali
+      - MSQL_ROOT_PASSWORD=kali
+    volumes:
+      - db_data:/var/lib/mysql
+    networks:
+      custom_network:
+        ipv4_address: 172.20.0.23
+  
+networks:
+  custom_network:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.20.0.0/16
+
+volumes:
+  db_data: {}
